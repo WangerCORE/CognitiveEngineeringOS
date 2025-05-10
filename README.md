@@ -1,7 +1,3 @@
----
-created: 2025-05-03T13:04
-updated: 2025-05-03T13:04
----
 # CE-OS (Cognitive Engineering OS)
 
 认知工程操作系统 - 一个用于自动采集、评估、分类和归档信息的智能系统。
