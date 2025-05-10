@@ -1,0 +1,77 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: ce-os-fetch
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ceos
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          multiplier: 2.0
+          max-interval: 10000
+        default-requeue-rejected: false
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        multiplier: 2.0
+        max-interval: 10000
+
+rss:
+  fetch:
+    interval: 300000  # 5分钟
+    queue: rss.fetch.queue
+    exchange: rss.fetch.exchange
+    routing-key: rss.fetch.routing.key
+
+logging:
+  level:
+    com.ceos.fetch: DEBUG
+    org.springframework.web: INFO
+    org.springframework.amqp: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+
+llm:
+  api:
+    key: ${LLM_API_KEY:your-api-key}
+    url: ${LLM_API_URL:https://api.openai.com/v1/chat/completions}
+    model: ${LLM_MODEL:gpt-3.5-turbo}
+    max-tokens: ${LLM_MAX_TOKENS:2000}
+    temperature: ${LLM_TEMPERATURE:0.7} 
